@@ -12,4 +12,5 @@ idf.py -p (PORT) flash
 https://note.com/rokkoku/n/nd6a57286ec13
 
 以下のコンフィグでピカブイを動かせることを確認
+
 #define CONTROLLER_TYPE (JOYCON_L)
