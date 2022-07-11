@@ -11,7 +11,7 @@ idf.py -p (PORT) flash
 ## ざっくりとした動かし方
 https://note.com/rokkoku/n/nd6a57286ec13
 
-pressはduration=0.15, wait=0.15以上確保することを推奨
+pressはduration=0.15, wait=0.15以上確保し、Show Serialにチェックを入れることを推奨
 
 
 以下のコンフィグでピカブイを動かせることを確認
