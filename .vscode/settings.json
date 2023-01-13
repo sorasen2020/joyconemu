@@ -1,0 +1,19 @@
+{
+    "idf.adapterTargetName": "esp32",
+    "idf.openOcdConfigs": [
+        "board/esp32-bridge.cfg"
+    ],
+    "files.associations": {
+        "esp_bt.h": "c",
+        "periph_ctrl.h": "c",
+        "esp_bt_device.h": "c",
+        "freertos.h": "c",
+        "controller.h": "c",
+        "bdaddr.h": "c",
+        "bt_defs.h": "c",
+        "inet.h": "c",
+        "sockets.h": "c"
+    },
+    "idf.portWin": "COM9",
+    "idf.flashType": "UART"
+}

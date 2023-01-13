@@ -1,5 +1,5 @@
 # joyconemu
-esp32でJoycon(R)をエミュレートし、PokeControllerで動かす
+esp32でJoycon(L/R)/Pro Controllerをエミュレートし、PokeControllerで動かす
 
 ## 使いかた
 esp-idfインストール済の環境で以下のコマンド実行
@@ -17,3 +17,4 @@ pressはduration=0.15, wait=0.15以上確保し、Show Serialにチェックを�
 以下のコンフィグでピカブイを動かせることを確認
 
 #define CONTROLLER_TYPE (JOYCON_L)
+

@@ -1,0 +1,49 @@
+{
+    "configurations": [
+        {
+            "name": "Win32(Debug)",
+            "includePath": [
+                "D:/esp/**",
+                "${workspaceFolder}/**"
+            ],
+            "defines": [
+                "DEBUG=1"
+            ],
+            "compilerPath": "d:\\esp\\espressif\\tools\\xtensa-esp32-elf\\esp-2022r1-11.2.0\\xtensa-esp32-elf\\bin\\xtensa-esp32-elf-gcc.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-x86",
+            "forcedInclude": [
+                "${workspaceFolder}/build/config/sdkconfig.h"
+            ],
+            "browse": {
+                "path": [
+                    "D:/esp/**",
+                    "${workspaceFolder}/**"
+                ]
+            }
+        },
+        {
+            "name": "Win32(Release)",
+            "includePath": [
+                "D:/esp/**",
+                "${workspaceFolder}/**"
+            ],
+            "defines": [],
+            "compilerPath": "d:\\esp\\espressif\\tools\\xtensa-esp32-elf\\esp-2022r1-11.2.0\\xtensa-esp32-elf\\bin\\xtensa-esp32-elf-gcc.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-x86",
+            "forcedInclude": [
+                "${workspaceFolder}/build/config/sdkconfig.h"
+            ],
+            "browse": {
+                "path": [
+                    "D:/esp/**",
+                    "${workspaceFolder}/**"
+                ]
+            }
+        }
+    ],
+    "version": 4
+}
