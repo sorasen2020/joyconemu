@@ -52,8 +52,8 @@ static uint32_t r_send = 0x800800;
 // #define UART_EMPTY_THRESH_DEFAULT	(10)
 SemaphoreHandle_t xSemaphore;
 // SemaphoreHandle_t spiSemaphore;
-bool connected = false;
-int paired = 0;
+static bool connected = false;
+static int paired = 0;
 // TaskHandle_t ButtonsHandle = NULL;
 // TaskHandle_t SendingHandle = NULL;
 // TaskHandle_t BlinkHandle = NULL;
@@ -61,7 +61,7 @@ static esp_hidd_app_param_t app_param;
 static esp_hidd_qos_param_t both_qos;
 // Timer has +1 added to it every send cycle
 // Apparently, it can be used to detect packet loss/excess latency
-uint8_t timer = 0;
+static uint8_t timer = 0;
 
 // bool blisr = false;
 
@@ -108,7 +108,7 @@ void uart_init() {
 	ESP_ERROR_CHECK(uart_param_config(UART_NUM, &uart_config));
 
 	//Set UART pins (using UART0 default pins ie no changes.)
-	ESP_ERROR_CHECK(uart_set_pin(UART_NUM, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
+	ESP_ERROR_CHECK(uart_set_pin(UART_NUM, UART_TXD_PIN, UART_RXD_PIN, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
 
 	// release the pre registered UART handler/subroutine
 	//ESP_ERROR_CHECK(uart_isr_free(UART_NUM));
@@ -164,6 +164,12 @@ static void uart_event_task(void *pvParameters)
 					// you can redirect received byte as echo also
 					char * line = (char *)dtmp;
 					sscanf(line, "%hx %hhx %hhx %hhx %hhx %hhx", &btns, &hat, &lx, &ly, &rx, &ry);
+					//but1_send = 0;
+					//but2_send = 0;
+					//but3_send = 0;
+					//l_send = 0x800800;
+					//r_send = 0x800800;
+
 					bool use_right	= btns & 0x0001;
 					bool use_left	= btns & 0x0002;
 #if((CONTROLLER_TYPE == PRO_CON) || (CONTROLLER_TYPE == JOYCON_R))
@@ -325,7 +331,7 @@ static void uart_event_task(void *pvParameters)
 					// after reading bytes from buffer clear UART interrupt status
 					// uart_clear_intr_status(UART_NUM, UART_RXFIFO_FULL_INT_CLR|UART_RXFIFO_TOUT_INT_CLR);
                     //ESP_LOGI(TAG, "[DATA EVT]:");
-                    // uart_write_bytes(EX_UART_NUM, (const char*) dtmp, event.size);
+                    //uart_write_bytes(UART_NUM, (const char*) dtmp, event.size);
                     break;
                 //Event of HW FIFO overflow detected
                 case UART_FIFO_OVF:
@@ -358,22 +364,7 @@ static void uart_event_task(void *pvParameters)
                     break;
                 //UART_PATTERN_DET
                 case UART_PATTERN_DET:
-                    uart_get_buffered_data_len(UART_NUM, &buffered_size);
-                    int pos = uart_pattern_pop_pos(UART_NUM);
-                    ESP_LOGI(TAG, "[UART PATTERN DETECTED] pos: %d, buffered size: %d", pos, buffered_size);
-                    if (pos == -1) {
-                        // There used to be a UART_PATTERN_DET event, but the pattern position queue is full so that it can not
-                        // record the position. We should set a larger queue size.
-                        // As an example, we directly flush the rx buffer here.
-                        uart_flush_input(UART_NUM);
-                    } else {
-                        uart_read_bytes(UART_NUM, dtmp, pos, 100 / portTICK_PERIOD_MS);
-                        //uint8_t pat[PATTERN_CHR_NUM + 1];
-                        //memset(pat, 0, sizeof(pat));
-                        //uart_read_bytes(EX_UART_NUM, pat, PATTERN_CHR_NUM, 100 / portTICK_PERIOD_MS);
-                        ESP_LOGI(TAG, "read data: %s", dtmp);
-                        //ESP_LOGI(TAG, "read pat : %s", pat);
-                    }
+                    ESP_LOGI(TAG, "[UART PATTERN DETECTED]");
                     break;
                 //Others
                 default:
@@ -947,9 +938,6 @@ void esp_bt_hidd_cb(esp_hidd_cb_event_t event, esp_hidd_cb_param_t *param)
 }
 
 void app_main() {
-	set_bt_address();
-	uart_init();
-
 	const char* TAG = "app_main";
 	esp_err_t ret;
 	static esp_bt_cod_t dclass;
@@ -967,6 +955,9 @@ void app_main() {
 	dclass.minor   = 2;
 	dclass.major   = 5;
 	dclass.service = 1;
+
+	set_bt_address();
+	uart_init();
 
 	ESP_ERROR_CHECK(esp_bt_controller_mem_release(ESP_BT_MODE_BLE));
 
@@ -999,29 +990,48 @@ void app_main() {
 	ESP_LOGI(TAG, "setting device name");
 
 #if CONTROLLER_TYPE == JOYCON_L
-	esp_bt_dev_set_device_name("Joy-Con (L)");
+	ret = esp_bt_dev_set_device_name("Joy-Con (L)");
 #elif CONTROLLER_TYPE == JOYCON_R
-	esp_bt_dev_set_device_name("Joy-Con (R)");
+	ret = esp_bt_dev_set_device_name("Joy-Con (R)");
 #elif CONTROLLER_TYPE == PRO_CON
-	esp_bt_dev_set_device_name("Pro Controller");
+	ret = esp_bt_dev_set_device_name("Pro Controller");
 #else
 	#error	"Config Error (CONTROLLER_TYPE)"
 #endif
 
+	if (ret != ESP_OK) {
+		ESP_LOGE(TAG, "esp_bt_dev_set_device_name failed: %s\n", esp_err_to_name(ret));
+		return;
+	}
+
 	ESP_LOGI(TAG, "setting hid device class");
-	esp_bt_gap_set_cod(dclass, ESP_BT_SET_COD_ALL);
+	ret = esp_bt_gap_set_cod(dclass, ESP_BT_SET_COD_ALL);
+	if (ret != ESP_OK) {
+		ESP_LOGE(TAG, "esp_bt_gap_set_cod failed: %s\n", esp_err_to_name(ret));
+		return;
+	}
 
 	ESP_LOGI(TAG, "setting hid parameters");
-	esp_bt_hid_device_register_callback(esp_bt_hidd_cb);
+	ret = esp_bt_hid_device_register_callback(esp_bt_hidd_cb);
+	if (ret != ESP_OK) {
+		ESP_LOGE(TAG, "esp_bt_hid_device_register_callback failed: %s\n", esp_err_to_name(ret));
+		return;
+	}
 
 	ESP_LOGI(TAG, "starting hid device");
-	esp_bt_hid_device_init();
+	ret = esp_bt_hid_device_init();
+	if (ret != ESP_OK) {
+		ESP_LOGE(TAG, "esp_bt_hid_device_init failed: %s\n", esp_err_to_name(ret));
+		return;
+	}
 
 	print_bt_address();
 
 	xTaskCreate(uart_event_task, "uart_event_task", 2048, NULL, 12, NULL);
 
+	/*
 	while(1) {
 		vTaskDelay(15 / portTICK_PERIOD_MS);
 	}
+	*/
 }
