@@ -18,3 +18,18 @@ pressはduration=0.15, wait=0.15以上確保し、Show Serialにチェックを�
 
 #define CONTROLLER_TYPE (JOYCON_L)
 
+## 追記(2023.01.13)
+
+### コンパイル環境
+
+- Visual Studio Code + Espressif IDF(拡張)
+- esp-idf version release/v5.0
+
+参考URL:https://github.com/espressif/vscode-esp-idf-extension/blob/master/docs/tutorial/install.md
+
+### 注意
+
+- COMポート番号、Flashサイズ、チップ名は各環境に合わせて要修正
+- ログの出力をOFFにしてるので、デバッグする際はLog outputのDefault log verbosityをNo Outputから変更すること
+- C/C++構成はWin32(Release)でコンパイル
+
