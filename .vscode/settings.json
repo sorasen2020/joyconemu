@@ -4,5 +4,9 @@
         "board/esp32-bridge.cfg"
     ],
     "idf.portWin": "COM9",
-    "idf.flashType": "UART"
+    "idf.flashType": "UART",
+    "files.associations": {
+        "*.inc": "c",
+        "unity.h": "c"
+    }
 }

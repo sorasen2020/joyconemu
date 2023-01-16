@@ -3,5 +3,5 @@
 
 #register_component()
 
-idf_component_register(SRCS "main.c"
+idf_component_register(SRCS "main.c" "btdevice.c" "pokecon.c"
                     INCLUDE_DIRS ".")

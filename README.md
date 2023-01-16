@@ -18,7 +18,7 @@ pressはduration=0.15, wait=0.15以上確保し、Show Serialにチェックを�
 
 #define CONTROLLER_TYPE (JOYCON_L)
 
-## 追記(2023.01.13)
+## 追記(2023.01.16)
 
 ### コンパイル環境
 
@@ -31,5 +31,6 @@ pressはduration=0.15, wait=0.15以上確保し、Show Serialにチェックを�
 
 - COMポート番号、Flashサイズ、チップ名は各環境に合わせて要修正
 - ログの出力をOFFにしてるので、デバッグする際はLog outputのDefault log verbosityをNo Outputから変更すること
-- C/C++構成はWin32(Release)でコンパイル
-
+- ~~C/C++構成はWin32(Release)でコンパイル~~
+- C/C++構成はWin32でコンパイル
+- デバッグ用にPoke Controllerからのコマンド受けをUART2, ESP_LOGxのデバッグログの出力をUART0にするdefine _DEBUGをpokecon.hに追加(デフォルトオフ)。UART2(GPIO17/TX, GPIO16/RX)にUSB-UART変換を繋げてください
