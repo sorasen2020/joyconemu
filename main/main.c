@@ -7,12 +7,15 @@
 #include "pokecon.h"
 
 #if _DEBUG
+#include "esp_timer.h"
 // for debug ESP32-DevkitC-32E ESP32-WROOM-32E
 #define UART_TXD_PIN \
 	(GPIO_NUM_17)
 #define UART_RXD_PIN \
 	(GPIO_NUM_16)
 #define UART_NUM (UART_NUM_2)
+static void periodic_timer_callback(void* arg);
+static uint32_t prev_time = 0;
 #else
 #define UART_TXD_PIN \
 	(UART_PIN_NO_CHANGE)	// When UART2, TX GPIO_NUM_19, RX GPIO_NUM_26
@@ -34,6 +37,18 @@ void app_main() {
 	const char* TAG = "app_main";
 	esp_err_t err;
 	int ret;
+
+#if _DEBUG
+    const esp_timer_create_args_t periodic_timer_args = {
+        .callback = &periodic_timer_callback,
+        /* name is optional, but may help identify the timer when debugging */
+        .name = "periodic"
+    };
+    esp_timer_handle_t periodic_timer;
+    ESP_ERROR_CHECK(esp_timer_create(&periodic_timer_args, &periodic_timer));
+    /* Start the timers */
+    ESP_ERROR_CHECK(esp_timer_start_periodic(periodic_timer, 1000));
+#endif
 
 	err = uart_init();
 	if (err != ESP_OK) {
@@ -89,6 +104,13 @@ static void uart_event_task(void *pvParameters)
 	pokecon_report_input_t pc_report;
     uint8_t* dtmp = (uint8_t*) malloc(RD_BUF_SIZE);
 	int ret;
+#if _DEBUG
+    uint32_t current_time = 0;
+    uint32_t delta = 0;
+#endif
+    char c;
+    int idx;
+    int counter;
 
 	for(;;) {
         //Waiting for UART event.
@@ -101,16 +123,36 @@ static void uart_event_task(void *pvParameters)
                 other types of events. If we take too much time on data event, the queue might
                 be full.*/
                 case UART_DATA:
+#if _DEBUG
+                    current_time = esp_timer_get_time();
+                    delta = (uint32_t)((double)(current_time - prev_time) / 1000);
+                    prev_time = current_time;
+                    ESP_LOGI(TAG, "[UART DATA]: %d %ld", event.size, delta);
+#else
                     ESP_LOGI(TAG, "[UART DATA]: %d", event.size);
-                    uart_read_bytes(UART_NUM, dtmp, event.size, portMAX_DELAY);
-					// a test code or debug code to indicate UART receives successfully,
-					// you can redirect received byte as echo also
-					char * line = (char *)dtmp;
-                    ESP_LOGI(TAG, "%s", line);
-					ret = pokecon_parseline(line, &pc_report);
-					if (ret != EOF) {
-						btdevice_sendreport(pc_report);
-					}
+#endif
+                    idx = 0;
+                    counter = 0;
+                    while (counter < event.size) {
+                        uart_read_bytes(UART_NUM, &c, 1, portMAX_DELAY);
+                        // ESP_LOGI(TAG, "c=%c", c);
+                        if ((c != '\n') && (idx < RD_BUF_SIZE)) {
+                            dtmp[idx++] = c;
+                        }
+
+                        if (c == '\r') {
+                            dtmp[idx++] = '\n';
+					        char * line = (char *)dtmp;
+                            ESP_LOGI(TAG, "%s", line);
+                            ret = pokecon_parseline(line, &pc_report);
+                            if (ret != EOF) {
+                                btdevice_sendreport(pc_report);
+                            }
+                            idx = 0;
+                            memset(dtmp, 0, sizeof(RD_BUF_SIZE));
+                        }
+                        counter++;
+                    }
 					//uart_flush_input(UART_NUM);
                     break;
                 //Event of HW FIFO overflow detected
@@ -157,3 +199,10 @@ static void uart_event_task(void *pvParameters)
     dtmp = NULL;
     vTaskDelete(NULL);
 }
+
+#if _DEBUG
+static void periodic_timer_callback(void* arg)
+{
+    int64_t time_since_boot = esp_timer_get_time();
+}
+#endif

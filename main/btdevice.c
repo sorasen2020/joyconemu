@@ -468,79 +468,79 @@ void esp_bt_hidd_cb(esp_hidd_cb_event_t event, esp_hidd_cb_param_t *param)
 									sizeof(reply02), reply02);
 			ESP_LOGI(TAG, "reply02");
 		}
-		if (param->intr_data.data[9] == 8) {
+		else if (param->intr_data.data[9] == 8) {
 			esp_bt_hid_device_send_report(ESP_HIDD_REPORT_TYPE_INTRDATA, 0x21,
 									sizeof(reply08), reply08);
 			ESP_LOGI(TAG, "reply08");
 		}
-		if (param->intr_data.data[9] == 16 && param->intr_data.data[10] == 0 && param->intr_data.data[11] == 96) {
+		else if (param->intr_data.data[9] == 16 && param->intr_data.data[10] == 0 && param->intr_data.data[11] == 96) {
 			esp_bt_hid_device_send_report(ESP_HIDD_REPORT_TYPE_INTRDATA, 0x21,
 									sizeof(spi_reply_address_0),
 									spi_reply_address_0);
 			ESP_LOGI(TAG, "replyspi0");
 		}
-		if (param->intr_data.data[9] == 16 && param->intr_data.data[10] == 80 && param->intr_data.data[11] == 96) {
+		else if (param->intr_data.data[9] == 16 && param->intr_data.data[10] == 80 && param->intr_data.data[11] == 96) {
 			esp_bt_hid_device_send_report(ESP_HIDD_REPORT_TYPE_INTRDATA, 0x21,
 									sizeof(spi_reply_address_0x50),
 									spi_reply_address_0x50);
 			ESP_LOGI(TAG, "replyspi50");
 		}
-		if (param->intr_data.data[9] == 3) {
+		else if (param->intr_data.data[9] == 3) {
 			esp_bt_hid_device_send_report(ESP_HIDD_REPORT_TYPE_INTRDATA, 0x21,
 									sizeof(reply03), reply03);
 			ESP_LOGI(TAG, "reply03");
 		}
-		if (param->intr_data.data[9] == 4) {
+		else if (param->intr_data.data[9] == 4) {
 			esp_bt_hid_device_send_report(ESP_HIDD_REPORT_TYPE_INTRDATA, 0x21,
 									sizeof(reply04), reply04);
 			ESP_LOGI(TAG, "reply04");
 		}
-		if (param->intr_data.data[9] == 16 && param->intr_data.data[10] == 128 && param->intr_data.data[11] == 96) {
+		else if (param->intr_data.data[9] == 16 && param->intr_data.data[10] == 128 && param->intr_data.data[11] == 96) {
 			esp_bt_hid_device_send_report(ESP_HIDD_REPORT_TYPE_INTRDATA, 0x21,
 									sizeof(spi_reply_address_0x80),
 									spi_reply_address_0x80);
 			ESP_LOGI(TAG, "replyspi80");
 		}
-		if (param->intr_data.data[9] == 16 && param->intr_data.data[10] == 152 && param->intr_data.data[11] == 96) {
+		else if (param->intr_data.data[9] == 16 && param->intr_data.data[10] == 152 && param->intr_data.data[11] == 96) {
 			esp_bt_hid_device_send_report(ESP_HIDD_REPORT_TYPE_INTRDATA, 0x21,
 									sizeof(spi_reply_address_0x98),
 									spi_reply_address_0x98);
 			ESP_LOGI(TAG, "replyspi98");
 		}
-		if (param->intr_data.data[9] == 16 && param->intr_data.data[10] == 16 && param->intr_data.data[11] == 128) {
+		else if (param->intr_data.data[9] == 16 && param->intr_data.data[10] == 16 && param->intr_data.data[11] == 128) {
 			esp_bt_hid_device_send_report(ESP_HIDD_REPORT_TYPE_INTRDATA, 0x21,
 									sizeof(spi_reply_address_0x10),
 									spi_reply_address_0x10);
 			ESP_LOGI(TAG, "replyspi10");
 		}
-		if (param->intr_data.data[9] == 16 && param->intr_data.data[10] == 61 && param->intr_data.data[11] == 96) {
+		else if (param->intr_data.data[9] == 16 && param->intr_data.data[10] == 61 && param->intr_data.data[11] == 96) {
 			esp_bt_hid_device_send_report(ESP_HIDD_REPORT_TYPE_INTRDATA, 0x21,
 									sizeof(spi_reply_address_0x3d),
 									spi_reply_address_0x3d);
 			ESP_LOGI(TAG, "reply3d");
 		}
-		if (param->intr_data.data[9] == 16 && param->intr_data.data[10] == 32 && param->intr_data.data[11] == 96) {
+		else if (param->intr_data.data[9] == 16 && param->intr_data.data[10] == 32 && param->intr_data.data[11] == 96) {
 			esp_bt_hid_device_send_report(ESP_HIDD_REPORT_TYPE_INTRDATA, 0x21,
 									sizeof(spi_reply_address_0x20),
 									spi_reply_address_0x20);
 			ESP_LOGI(TAG, "replyspi20");
 		}
-		if (param->intr_data.data[9] == 64 /*&& param->intr_data.data[11] == 1*/) {
+		else if (param->intr_data.data[9] == 64 /*&& param->intr_data.data[11] == 1*/) {
 			esp_bt_hid_device_send_report(ESP_HIDD_REPORT_TYPE_INTRDATA, 0x21,
 									sizeof(reply4001), reply4001);
 			ESP_LOGI(TAG, "reply4001");
 		}
-		if (param->intr_data.data[9] == 72 /* && param->intr_data.data[11] == 1*/) {
+		else if (param->intr_data.data[9] == 72 /* && param->intr_data.data[11] == 1*/) {
 			esp_bt_hid_device_send_report(ESP_HIDD_REPORT_TYPE_INTRDATA, 0x21,
 									sizeof(reply4801), reply4801);
 			ESP_LOGI(TAG, "reply4801");
 		}
-		if (param->intr_data.data[9] == 34 /*&& param->intr_data.data[11] == 1*/) {
+		else if (param->intr_data.data[9] == 34 /*&& param->intr_data.data[11] == 1*/) {
 			esp_bt_hid_device_send_report(ESP_HIDD_REPORT_TYPE_INTRDATA, 0x21,
 									sizeof(reply3401), reply3401);
 			ESP_LOGI(TAG, "reply3401");
 		}
-		if (param->intr_data.data[9] == 48 /*&& param->intr_data.data[11] == 1*/) {
+		else if (param->intr_data.data[9] == 48 /*&& param->intr_data.data[11] == 1*/) {
 			esp_bt_hid_device_send_report(ESP_HIDD_REPORT_TYPE_INTRDATA, 0x21,
 									sizeof(reply3001), reply3001);
 			ESP_LOGI(TAG, "reply3001");
@@ -548,8 +548,7 @@ void esp_bt_hidd_cb(esp_hidd_cb_event_t event, esp_hidd_cb_param_t *param)
 				paired = 1;
 			}
 		}
-
-		if (param->intr_data.data[9] == 33 && param->intr_data.data[10] == 33) {
+		else if (param->intr_data.data[9] == 33 && param->intr_data.data[10] == 33) {
 			esp_bt_hid_device_send_report(ESP_HIDD_REPORT_TYPE_INTRDATA, 0x21,
 									sizeof(reply3333), reply3333);
 			ESP_LOGI(TAG, "reply3333");
@@ -576,7 +575,7 @@ void esp_bt_hidd_cb(esp_hidd_cb_event_t event, esp_hidd_cb_param_t *param)
 	default:
 		break;
 	}
-	// vTaskDelay(15 / portTICK_PERIOD_MS);
+	vTaskDelay(1 / portTICK_PERIOD_MS);
 }
 
 int btdevice_init(void)

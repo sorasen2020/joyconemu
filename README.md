@@ -18,7 +18,7 @@ pressはduration=0.15, wait=0.15以上確保し、Show Serialにチェックを�
 
 #define CONTROLLER_TYPE (JOYCON_L)
 
-## 追記(2023.01.16)
+## 追記(2023.01.17)
 
 ### コンパイル環境
 
@@ -34,3 +34,9 @@ pressはduration=0.15, wait=0.15以上確保し、Show Serialにチェックを�
 - ~~C/C++構成はWin32(Release)でコンパイル~~
 - C/C++構成はWin32でコンパイル
 - デバッグ用にPoke Controllerからのコマンド受けをUART2, ESP_LOGxのデバッグログの出力をUART0にするdefine _DEBUGをpokecon.hに追加(デフォルトオフ)。UART2(GPIO17/TX, GPIO16/RX)にUSB-UART変換を繋げてください
+- Bluetoothのログもオフにしてるので必要な場合は有効にしてください
+    - Bluetoothのログをオフにする際、コンパイルエラーになったのでbtc_hd.cのbtc_hd_send_report関数に以下を追加
+```
+    report.type = 0;
+    report.id = 0;
+```
